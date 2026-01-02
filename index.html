@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💌 理想型心靈契合測驗</title>
+    <style>
+        :root {
+            --soft-pink: #fff0f3;
+            --main-pink: #ff85a1;
+            --dark-pink: #f06292;
+            --accent-pink: #ec407a;
+            --text-color: #7a4a4a;
+        }
+
+        body {
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+            background: linear-gradient(135deg, #fff5f7 0%, #fce4ec 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            color: var(--text-color);
+            overflow: hidden;
+        }
+
+        /* 背景大裝飾元件 */
+        .bg-element {
+            position: fixed;
+            user-select: none;
+            z-index: -1;
+            filter: blur(1px);
+            animation: float-around 20s linear infinite;
+        }
+
+        @keyframes float-around {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, 50px) rotate(10deg); }
+            66% { transform: translate(-20px, 100px) rotate(-10deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
+        /* 巨大的蕾絲邊飾 */
+        .lace-side {
+            position: fixed;
+            top: 0;
+            width: 150px;
+            height: 100%;
+            background-image: radial-gradient(circle at 50% 50%, #ffc1d1 10%, transparent 50%);
+            background-size: 40px 40px;
+            opacity: 0.15;
+            z-index: -1;
+        }
+        .lace-left { left: 0; border-right: 5px dotted #ffc1d1; }
+        .lace-right { right: 0; border-left: 5px dotted #ffc1d1; }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 4rem 3rem;
+            border-radius: 50px;
+            box-shadow: 0 20px 50px rgba(255, 133, 161, 0.3);
+            width: 90%;
+            max-width: 700px;
+            text-align: center;
+            border: 12px solid #fff;
+            position: relative;
+            backdrop-filter: blur(5px);
+        }
+
+        .container::after {
+            content: "🎀";
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 80px;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 { 
+            color: var(--accent-pink); 
+            font-size: 2.2rem; 
+            margin-bottom: 2rem;
+            letter-spacing: 2px;
+        }
+
+        h3 { 
+            font-size: 1.6rem; 
+            line-height: 1.6; 
+            margin-bottom: 2rem;
+            color: #8d5a5a;
+        }
+
+        .btn {
+            background: linear-gradient(to bottom, #ffafbd, #ff8e91);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            border-radius: 40px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 20px rgba(255, 142, 145, 0.4);
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 25px rgba(255, 142, 145, 0.6);
+        }
+
+        .option-list {
+            display: grid;
+            gap: 18px;
+            margin-top: 35px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 3px solid #ffe1e9;
+            padding: 22px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.15rem;
+            color: var(--text-color);
+            position: relative;
+            font-weight: 500;
+        }
+
+        .option-btn:hover {
+            background: #fff9fa;
+            border-color: var(--main-pink);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 133, 161, 0.15);
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 15px;
+            background: #eee;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            border: 2px solid #fff;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffafbd, #ff4d6d);
+            width: 0%;
+            border-radius: 10px;
+            transition: width 0.5s ease-out;
+        }
+
+        .hidden { display: none; }
+
+        #result-display {
+            font-size: 1.15rem;
+            line-height: 2;
+            margin: 30px 0;
+            padding: 40px;
+            border-radius: 30px;
+            background: rgba(255, 245, 247, 0.8);
+            border: 2px dashed var(--main-pink);
+            text-align: left;
+            position: relative;
+        }
+
+        .type-title {
+            font-size: 1.8rem;
+            color: var(--accent-pink);
+            text-align: center;
+            display: block;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ffe1e9;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="lace-side lace-left"></div>
+<div class="lace-side lace-right"></div>
+
+<script>
+    const icons = ['💗', '🌸', '✨', '🎀', '🧸', '🌹', '☁️'];
+    for(let i=0; i<15; i++) {
+        const el = document.createElement('div');
+        el.className = 'bg-element';
+        el.innerText = icons[Math.floor(Math.random() * icons.length)];
+        el.style.left = Math.random() * 100 + 'vw';
+        el.style.top = Math.random() * 100 + 'vh';
+        el.style.fontSize = (Math.random() * 40 + 20) + 'px';
+        el.style.animationDelay = (Math.random() * 5) + 's';
+        el.style.opacity = Math.random() * 0.5 + 0.2;
+        document.body.appendChild(el);
+    }
+</script>
+
+<div class="container" id="app">
+    <div id="start-screen">
+        <h1>💕 命中注定理想型分析</h1>
+        <p style="font-size: 1.2rem;">這是一個充滿溫暖的小空間，<br>讓我們安靜地聽聽內心的聲音。</p>
+        <div style="font-size: 50px; margin: 20px;">💘</div>
+        <button class="btn" onclick="showScreen('gender-screen')">開始分析</button>
+    </div>
+
+    <div id="gender-screen" class="hidden">
+        <h3>首先，請問您的性向是？</h3>
+        <div class="option-list">
+            <button class="option-btn" onclick="setOrientation()">✨ 我喜歡男生</button>
+            <button class="option-btn" onclick="setOrientation()">✨ 我喜歡女生</button>
+            <button class="option-btn" onclick="setOrientation()">✨ 我都喜歡 / 不拘</button>
+        </div>
+    </div>
+
+    <div id="question-screen" class="hidden">
+        <div class="progress-container"><div class="progress-fill" id="progress"></div></div>
+        <h3 id="question-text"></h3>
+        <div class="option-list" id="options-container"></div>
+    </div>
+
+    <div id="result-screen" class="hidden">
+        <h1>💐 專屬於您的分析結果</h1>
+        <div id="result-display"></div>
+        <button class="btn" onclick="location.reload()">重新測驗</button>
+    </div>
+</div>
+
+<script>
+    let currentQuestion = 0;
+    let scores = { A: 0, B: 0, C: 0, D: 0 };
+
+    const questions = [
+        {
+            q: "你理想的假日午后是怎麼度過的？",
+            options: [
+                { text: "待在安靜的咖啡廳看書，享受不被打擾的時光", type: "A" },
+                { text: "約上朋友去戶外踏青、拍照，感受大自然", type: "B" },
+                { text: "逛逛藝術展或書店，尋找一點生活靈感", type: "C" },
+                { text: "在家親自下廚或做些手工，把家裡布置得很溫馨", type: "D" }
+            ]
+        },
+        {
+            q: "對於另一半的興趣愛好，你會有什麼期待？",
+            options: [
+                { text: "希望對方有專注的研究領域，能在專業上讓我佩服", type: "A" },
+                { text: "希望能陪我一起運動或探索各種新奇的景點", type: "B" },
+                { text: "希望對方有品味，能和我分享對生活的獨特見解", type: "C" },
+                { text: "希望對方重視生活儀式感，願意和我一起打理日常", type: "D" }
+            ]
+        },
+        {
+            q: "如果你們一起去旅行，你最看重的是什麼？",
+            options: [
+                { text: "行程不需要太趕，能深入了解當地的文化底蘊", type: "A" },
+                { text: "豐富的體驗活動，讓每一天都過得精彩充實", type: "B" },
+                { text: "住宿的品質與環境，要有一定的舒適度與美感", type: "C" },
+                { text: "能和愛的人在一起，哪怕只是隨便走走都很幸福", type: "D" }
+            ]
+        },
+        {
+            q: "關於對方的「外觀特徵與穿搭風格」，你最容易被哪種吸引？",
+            options: [
+                { text: "書卷氣質、戴眼鏡、穿著簡約乾淨且有質感", type: "A" },
+                { text: "陽光自信的面容、結實的身型、充滿活力的運動感", type: "B" },
+                { text: "五官深邃、眼神銳利、穿搭得體且散發出專業氣場", type: "C" },
+                { text: "笑容溫暖治癒、長相柔和、穿著舒適柔軟且親切感十足", type: "D" }
+            ]
+        },
+        {
+            q: "當你感到壓力很大時，另一半做什麼最能安撫你？",
+            options: [
+                { text: "給我獨處的空間，但在我需要時提供理性的分析", type: "A" },
+                { text: "講笑話逗我開心，或者帶我出去大吃一頓轉換心情", type: "B" },
+                { text: "溫柔地鼓勵我，並展現出「沒關係，我都在」的擔當", type: "C" },
+                { text: "默默幫我把家務做完，準備好我愛吃的晚餐等我回家", type: "D" }
+            ]
+        }
+    ];
+
+    function showScreen(id) {
+        document.querySelectorAll('#app > div').forEach(div => div.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+    }
+
+    function setOrientation() {
+        showScreen('question-screen');
+        showQuestion();
+    }
+
+    function showQuestion() {
+        if (currentQuestion >= questions.length) {
+            showResult();
+            return;
+        }
+        const qData = questions[currentQuestion];
+        document.getElementById('question-text').innerText = (currentQuestion + 1) + ". " + qData.q;
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+        qData.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt.text;
+            btn.onclick = () => {
+                scores[opt.type]++;
+                currentQuestion++;
+                updateProgress();
+                showQuestion();
+            };
+            container.appendChild(btn);
+        });
+    }
+
+    function updateProgress() {
+        const percent = (currentQuestion / questions.length) * 100;
+        document.getElementById('progress').style.width = percent + '%';
+    }
+
+    function showResult() {
+        showScreen('result-screen');
+        let maxScore = 0;
+        let resultType = 'A';
+        for (let key in scores) {
+            if (scores[key] >= maxScore) {
+                maxScore = scores[key];
+                resultType = key;
+            }
+        }
+
+        const results = {
+            A: { title: "知性冷靜的靈魂伴侶", desc: "你傾向於與一個思想獨立且外型清秀的人相處。對方通常帶著淡淡的書卷氣，穿搭簡約卻不失質感。比起外表的華麗，你更在意他眼神中透出的智慧，這種心靈上的共鳴與沉穩的氣息，會讓你感到無比安心。" },
+            B: { title: "熱情陽光的行動夥伴", desc: "你容易被充滿活力、外型陽光的人吸引。對方通常擁有健康的體魄與迷人的笑容，穿搭隨性且大方。這種由內而外散發出的自信力量，能帶著你一起跳出舒適圈，讓生活中的每一天都充滿動能與期待。" },
+            C: { title: "優雅自信的成熟對象", desc: "你欣賞的是那種有氣場、五官精緻且自我要求高的人。對方在穿搭上非常有品味，展現出一種專業且穩重的魅力。你渴望的是一份基於互相崇拜與信任的感情，這種優雅的氛圍是你理想生活的基調。" },
+            D: { title: "溫柔細膩的居家伴侶", desc: "你最渴望的是一位長相柔和、笑容能治癒你心靈的伴侶。對方的氣質親切且沒有攻擊性，總是穿著舒適的衣物，給你一種鄰家般的溫暖。他擅長把平凡的日子過成詩，是你疲憊時最想停靠的港灣。" }
+        };
+
+        const final = results[resultType];
+        document.getElementById('result-display').innerHTML = `
+            <strong class="type-title">${final.title}</strong>
+            <p style="text-indent: 2em;">${final.desc}</p>
+        `;
+    }
+</script>
+
+</body>
+</html>
